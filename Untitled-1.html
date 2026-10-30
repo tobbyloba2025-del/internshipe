@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Profile Finder</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      color: #58a6ff;
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #8b949e;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      color: #8b949e;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 8px;
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      padding: 13px;
+      background: #111820;
+      color: #fff;
+      border: 1px solid #303943;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+
+    input:focus {
+      outline: 1px solid #388bfd;
+      border-color: #388bfd;
+    }
+
+    button {
+      padding: 11px 14px;
+      border: 1px solid #303943;
+      border-radius: 5px;
+      background: transparent;
+      color: #c9d1d9;
+      cursor: pointer;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      filter: brightness(1.2);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .search-btn {
+      background: #2463a9;
+      border-color: #2463a9;
+      color: white;
+    }
+
+    .message {
+      min-height: 18px;
+      margin-top: 12px;
+      color: #8b949e;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      color: #f85149;
+    }
+
+    .message.success {
+      color: #56d381;
+    }
+
+    #profile {
+      margin-top: 24px;
+    }
+
+    .profile-card {
+      border: 1px solid #303943;
+      border-radius: 6px;
+      background: #111820;
+      overflow: hidden;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 22px 18px;
+      border-bottom: 1px solid #252d37;
+    }
+
+    .avatar {
+      width: 84px;
+      height: 84px;
+      flex-shrink: 0;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1px solid #303943;
+      background: #0d1117;
+    }
+
+    .profile-heading {
+      min-width: 0;
+    }
+
+    .profile-heading h2 {
+      color: #e6edf3;
+      font-size: 19px;
+      margin-bottom: 7px;
+      overflow-wrap: anywhere;
+    }
+
+    .username {
+      color: #58a6ff;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .profile-body {
+      padding: 18px;
+    }
+
+    .bio {
+      color: #a5b1c2;
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    .section-title {
+      color: #58a6ff;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 14px;
+      border: 1px solid #252d37;
+      border-radius: 5px;
+      background: #0d1117;
+    }
+
+    .stat strong {
+      display: block;
+      color: #56d381;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .stat span {
+      color: #8b949e;
+      font-size: 12px;
+    }
+
+    .profile-details {
+      list-style: none;
+      margin-top: 20px;
+      border-top: 1px solid #252d37;
+    }
+
+    .profile-details li {
+      padding: 11px 0;
+      border-bottom: 1px solid #252d37;
+      color: #a5b1c2;
+      font-size: 12px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-label {
+      color: #8b949e;
+      display: inline-block;
+      min-width: 85px;
+    }
+
+    .profile-link {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 10px 14px;
+      border: 1px solid #303943;
+      border-radius: 5px;
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .profile-link:hover {
+      background: #1a2633;
+    }
+
+    .note {
+      margin-top: 28px;
+      padding-top: 14px;
+      border-top: 1px solid #252d37;
+      color: #6e7681;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 420px) {
+      body {
+        align-items: flex-start;
+      }
+
+      .container {
+        margin-top: 8vh;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      .profile-header {
+        gap: 12px;
+        padding: 16px 12px;
+      }
+
+      .avatar {
+        width: 68px;
+        height: 68px;
+      }
+
+      .profile-heading h2 {
+        font-size: 16px;
+      }
+
+      .profile-body {
+        padding: 14px;
+      }
+
+      .search-btn {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <h1>GitHub Profile Finder</h1>
+
+    <p class="subtitle">
+      Search for any developer and explore their public GitHub profile.
+    </p>
+
+    <form id="searchForm">
+      <label for="username">GITHUB USERNAME</label>
+
+      <div class="input-wrapper">
+        <input
+          type="text"
+          id="username"
+          placeholder="e.g. torvalds"
+          autocomplete="off"
+          required
+        >
+
+        <button type="submit" class="search-btn" id="searchBtn">
+          Search
+        </button>
+      </div>
+    </form>
+
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+
+    <div id="profile"></div>
+  </main>
+
+  <script>
+    const form = document.getElementById("searchForm");
+    const userInput = document.getElementById("username");
+    const searchButton = document.getElementById("searchBtn");
+    const statusText = document.getElementById("message");
+    const profileContainer = document.getElementById("profile");
+
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const githubUsername = userInput.value.trim();
+
+      if (!githubUsername) {
+        showMessage("Please enter a GitHub username.", "error");
+        return;
+      }
+
+      profileContainer.replaceChildren();
+      showMessage("Searching GitHub...", "");
+      searchButton.disabled = true;
+      searchButton.textContent = "Loading...";
+
+      try {
+        const result = await fetch(
+          `https://api.github.com/users/${encodeURIComponent(githubUsername)}`
+        );
+
+        if (result.status === 404) {
+          throw new Error("User not found!");
+        }
+
+        if (!result.ok) {
+          throw new Error(
+            `GitHub API error (${result.status}). Please try again.`
+          );
+        }
+
+        const githubUser = await result.json();
+
+        displayProfile(githubUser);
+        showMessage("Profile loaded successfully.", "success");
+
+      } catch (err) {
+        profileContainer.replaceChildren();
+
+        if (err.message === "User not found!") {
+          showMessage(
+            "User not found! Check the username and try again.",
+            "error"
+          );
+        } else if (err instanceof TypeError) {
+          showMessage(
+            "Network error. Check your internet connection and try again.",
+            "error"
+          );
+        } else {
+          showMessage(err.message, "error");
+        }
+
+      } finally {
+        searchButton.disabled = false;
+        searchButton.textContent = "Search";
+      }
+    });
+
+    function displayProfile(githubUser) {
+      const profileCard = document.createElement("article");
+      profileCard.className = "profile-card";
+
+      const profileHeader = document.createElement("div");
+      profileHeader.className = "profile-header";
+
+      const profileImage = document.createElement("img");
+      profileImage.className = "avatar";
+      profileImage.src = githubUser.avatar_url;
+      profileImage.alt = `${githubUser.login}'s avatar`;
+
+      const profileHeading = document.createElement("div");
+      profileHeading.className = "profile-heading";
+
+      const displayName = document.createElement("h2");
+      displayName.textContent = githubUser.name || githubUser.login;
+
+      const usernameText = document.createElement("p");
+      usernameText.className = "username";
+      usernameText.textContent = "@" + githubUser.login;
+
+      profileHeading.append(displayName, usernameText);
+      profileHeader.append(profileImage, profileHeading);
+
+      const profileBody = document.createElement("div");
+      profileBody.className = "profile-body";
+
+      const userBio = document.createElement("p");
+      userBio.className = "bio";
+      userBio.textContent = githubUser.bio || "This user has no bio available.";
+
+      const sectionTitle = document.createElement("h3");
+      sectionTitle.className = "section-title";
+      sectionTitle.textContent = "PROFILE STATISTICS";
+
+      const stats = document.createElement("div");
+      stats.className = "stats";
+
+      const repoStat = document.createElement("div");
+      repoStat.className = "stat";
+
+      const repoCount = document.createElement("strong");
+      repoCount.textContent = githubUser.public_repos;
+
+      const repoLabel = document.createElement("span");
+      repoLabel.textContent = "Public repositories";
+
+      repoStat.append(repoCount, repoLabel);
+      stats.appendChild(repoStat);
+
+      const profileDetails = document.createElement("ul");
+      profileDetails.className = "profile-details";
+
+      addDetail(profileDetails, "Location", githubUser.location);
+      addDetail(profileDetails, "Company", githubUser.company);
+      addDetail(profileDetails, "Followers", githubUser.followers);
+      addDetail(profileDetails, "Following", githubUser.following);
+      addDetail(profileDetails, "Joined GitHub", formatDate(githubUser.created_at));
+
+      const profileLink = document.createElement("a");
+      profileLink.className = "profile-link";
+      profileLink.href = githubUser.html_url;
+      profileLink.target = "_blank";
+      profileLink.rel = "noopener noreferrer";
+      profileLink.textContent = "View GitHub Profile ↗";
+
+      profileBody.append(userBio, sectionTitle, stats, profileDetails, profileLink);
+      profileCard.append(profileHeader, profileBody);
+
+      profileContainer.replaceChildren(profileCard);
+    }
+
+    function addDetail(detailsList, label, value) {
+      if (value === null || value === undefined || value === "") {
+        return;
+      }
+
+      const detailItem = document.createElement("li");
+
+      const labelText = document.createElement("span");
+      labelText.className = "detail-label";
+      labelText.textContent = label;
+
+      const valueText = document.createElement("span");
+      valueText.textContent = value;
+
+      detailItem.append(labelText, valueText);
+      detailsList.appendChild(detailItem);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "";
+
+      return new Date(dateString).toLocaleDateString("en", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    }
+
+    function showMessage(msg, msgType) {
+      statusText.textContent = msg;
+      statusText.className = "message";
+
+      if (msgType) {
+        statusText.classList.add(msgType);
+      }
+    }
+  </script>
+</body>
+</html>
